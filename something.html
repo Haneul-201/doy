@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>NCT Doyoung Photocard List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-[#d8edf3] min-h-screen p-4">
+    <div id="app" class="max-w-6xl mx-auto">
+      <h1 class="text-4xl font-bold mb-6 text-[#5584AC] font-serif">Doyoung Photocard List</h1>
+
+      <div class="flex flex-wrap gap-2 mb-4" id="categoryButtons"></div>
+
+      <!-- 검색창 + 버튼 -->
+      <div class="flex flex-wrap gap-2 mb-4 items-center">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search..."
+          class="p-2 border border-gray-300 rounded grow min-w-[200px]"
+        />
+        <button id="selectAllBtn" class="px-3 py-2 bg-[#6a95b7] text-white rounded">Select All</button>
+        <button id="deselectAllBtn" class="px-3 py-2 bg-[#6a95b7] text-white rounded">Deselect All</button>
+        <button id="copySelectedBtn" class="px-3 py-2 bg-[#6a95b7] text-white rounded">Copy Selected</button>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="photocardGrid"></div>
+    </div>
+
+    <script>
+      // 카테고리 목록 (All 포함)
+      const categories = [
+        "All",
+        "Album",
+        "Benefit",
+        "Album Goods",
+        "Goods",
+        "Performance",
+        "Exhibition",
+        "Season's Greetings",
+        "Etc"
+      ];
+
+      // 각 카테고리별 예시 데이터 (실제 이미지 URL과 이름으로 교체하세요)
+      const photocardData = [
+        {
+          category: "Album",
+          items: [
+            { id: 1, name: "Album Card 1", image: "https://i.imgur.com/jLoolFb.jpeg" },
+            { id: 2, name: "Album Card 2", image: "https://i.imgur.com/YvZ3LE9.jpeg" },
+            { id: 3, name: "Album Card 3", image: "https://i.imgur.com/YvZ3LE9.jpeg" },
+          ]
+        },
+        {
+          category: "Benefit",
+          items: [
+            { id: 3, name: "Benefit 1", image: "https://i.imgur.com/Hhj2iFD.jpeg" }
+          ]
+        },
+        {
+          category: "Album Goods",
+          items: [
+            { id: 4, name: "Album Goods 1", image: "https://i.imgur.com/vfKz4r7.jpeg" }
+          ]
+        },
+        {
+          category: "Goods",
+          items: [
+            { id: 5, name: "Goods 1", image: "https://i.imgur.com/0nqXe6g.jpeg" }
+          ]
+        },
+        {
+          category: "Performance",
+          items: [
+            { id: 6, name: "Performance 1", image: "https://i.imgur.com/0QhDym3.jpeg" }
+          ]
+        },
+        {
+          category: "Exhibition",
+          items: [
+            { id: 7, name: "Exhibition 1", image: "https://i.imgur.com/3Q9vRJb.jpeg" }
+          ]
+        },
+        {
+          category: "Season's Greetings",
+          items: [
+            { id: 8, name: "Season's Greetings 1", image: "https://i.imgur.com/XWdxlWx.jpeg" }
+          ]
+        },
+        {
+          category: "Etc",
+          items: [
+            { id: 9, name: "Etc 1", image: "https://i.imgur.com/t6N3F8u.jpeg" }
+          ]
+        }
+      ];
+
+      // 모든 아이템을 평탄화하여 category 포함
+      const allItems = photocardData.flatMap(group =>
+        group.items.map(item => ({
+          ...item,
+          category: group.category
+        }))
+      );
+
+      let selectedCategory = "All";
+      let searchTerm = "";
+      let selectedIds = new Set();
+
+      const categoryButtons = document.getElementById("categoryButtons");
+      const searchInput = document.getElementById("searchInput");
+      const photocardGrid = document.getElementById("photocardGrid");
+
+      const selectAllBtn = document.getElementById("selectAllBtn");
+      const deselectAllBtn = document.getElementById("deselectAllBtn");
+      const copySelectedBtn = document.getElementById("copySelectedBtn");
+
+      function renderButtons() {
+        categoryButtons.innerHTML = "";
+        categories.forEach(category => {
+          const button = document.createElement("button");
+          button.textContent = category;
+          button.className =
+            "px-4 py-2 rounded-full border " +
+            (selectedCategory === category
+              ? "bg-[#6a95b7] text-white"
+              : "bg-white text-[#6a95b7] border-[#6a95b7]");
+          button.onclick = () => {
+            selectedCategory = category;
+            renderGrid();
+            renderButtons();
+          };
+          categoryButtons.appendChild(button);
+        });
+      }
+
+      function renderGrid() {
+        const filteredItems = allItems.filter(item => {
+          const matchCategory = selectedCategory === "All" || item.category === selectedCategory;
+          const matchSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+          return matchCategory && matchSearch;
+        });
+
+        photocardGrid.innerHTML = "";
+        filteredItems.forEach(item => {
+          const isSelected = selectedIds.has(item.id);
+          const card = document.createElement("div");
+          card.className =
+            "bg-white p-2 rounded shadow cursor-pointer border-4 " +
+            (isSelected ? "border-[#6a95b7]" : "border-transparent");
+          card.innerHTML = `
+            <img src="${item.image}" alt="${item.name}" class="w-full h-auto rounded" />
+            <p class="mt-2 text-sm text-center">${item.name}</p>
+          `;
+          card.onclick = () => {
+            if (selectedIds.has(item.id)) {
+              selectedIds.delete(item.id);
+            } else {
+              selectedIds.add(item.id);
+            }
+            renderGrid();
+          };
+          photocardGrid.appendChild(card);
+        });
+      }
+
+      searchInput.addEventListener("input", (e) => {
+        searchTerm = e.target.value;
+        renderGrid();
+      });
+
+      selectAllBtn.addEventListener("click", () => {
+        const filteredItems = allItems.filter(item => {
+          const matchCategory = selectedCategory === "All" || item.category === selectedCategory;
+          const matchSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+          return matchCategory && matchSearch;
+        });
+        filteredItems.forEach(item => selectedIds.add(item.id));
+        renderGrid();
+      });
+
+      deselectAllBtn.addEventListener("click", () => {
+        selectedIds.clear();
+        renderGrid();
+      });
+
+      copySelectedBtn.addEventListener("click", () => {
+        const selectedItems = allItems.filter(item => selectedIds.has(item.id));
+        if (selectedItems.length === 0) {
+          alert("No items selected.");
+          return;
+        }
+        const imageUrls = selectedItems.map(item => item.image).join("\n");
+        navigator.clipboard.writeText(imageUrls).then(() => {
+          alert("Selected image URLs copied to clipboard!");
+        });
+      });
+
+      renderButtons();
+      renderGrid();
+    </script>
+  </body>
+</html>
