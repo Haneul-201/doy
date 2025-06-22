@@ -13,22 +13,17 @@
       <div class="flex flex-wrap gap-2 mb-4" id="categoryButtons"></div>
 
       <!-- 검색창 + 버튼 -->
-      <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
-  {/* 전체 / 선택 개수 표시 */}
-  <div className="text-sm font-medium">
-    전체: {filteredCards.length}개 / 선택: {selectedIds.length}개
-  </div>
-
-  {/* 검색창 (크기 줄임) */}
-  <input
-    type="text"
-    placeholder="Search"
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-    className="border border-gray-300 px-3 py-1 rounded-md text-sm w-60"
-  />
-</div>
-
+      <div class="flex flex-wrap gap-2 mb-4 items-center">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search..."
+          class="p-2 border border-gray-300 rounded grow min-w-[200px]"
+        />
+        <button id="selectAllBtn" class="px-3 py-2 bg-[#6a95b7] text-white rounded">Select All</button>
+        <button id="deselectAllBtn" class="px-3 py-2 bg-[#6a95b7] text-white rounded">Deselect All</button>
+        <button id="copySelectedBtn" class="px-3 py-2 bg-[#6a95b7] text-white rounded">Copy Selected</button>
+      </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="photocardGrid"></div>
     </div>
