@@ -44,9 +44,9 @@
         "Etc"
       ];
 
-      // ✅ 전체 데이터 (여기 photocardData는 그대로 붙여넣으세요!)
+      // ✅ 전체 데이터 (여기에 기존 photocardData 전체 붙여넣기)
       const photocardData = [
-                {
+               {
           category: "Album",
           items: [
             { id: 1, name: "Cherry Bomb", image: "https://i.imgur.com/ify8SjL.jpeg" },
@@ -1563,18 +1563,25 @@
       const photocardGrid = document.getElementById("photocardGrid");
       const searchInput = document.getElementById("searchInput");
 
-      // ✅ 카테고리 버튼 생성
-      categories.forEach(cat => {
-        const btn = document.createElement("button");
-        btn.textContent = cat;
-        btn.className =
-          "px-3 py-1 rounded border border-[#6a95b7] text-[#6a95b7] hover:bg-[#6a95b7] hover:text-white";
-        btn.addEventListener("click", () => {
-          selectedCategory = cat;
-          renderCards();
+      // ✅ 카테고리 버튼 생성 (원래 디자인 유지)
+      function renderCategoryButtons() {
+        categoryButtons.innerHTML = "";
+        categories.forEach(cat => {
+          const btn = document.createElement("button");
+          btn.textContent = cat;
+          btn.className =
+            "px-4 py-2 rounded-full border " +
+            (selectedCategory === cat
+              ? "bg-[#6a95b7] text-white border-[#6a95b7]"
+              : "bg-white text-[#6a95b7] border-[#6a95b7] hover:bg-[#6a95b7] hover:text-white");
+          btn.addEventListener("click", () => {
+            selectedCategory = cat;
+            renderCategoryButtons();
+            renderCards();
+          });
+          categoryButtons.appendChild(btn);
         });
-        categoryButtons.appendChild(btn);
-      });
+      }
 
       // ✅ 카드 렌더링
       function renderCards() {
@@ -1596,7 +1603,7 @@
         itemsToShow.forEach(item => {
           const card = document.createElement("div");
           card.className =
-            "relative border rounded overflow-hidden cursor-pointer " +
+            "relative border rounded overflow-hidden cursor-pointer transition " +
             (selectedCards.has(item.id) ? "opacity-50 grayscale" : "");
 
           card.innerHTML = `
@@ -1653,6 +1660,7 @@
       });
 
       // ✅ 초기 렌더링
+      renderCategoryButtons();
       renderCards();
     </script>
   </body>
