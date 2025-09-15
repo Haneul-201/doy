@@ -1616,10 +1616,9 @@
 
         itemsToShow.forEach(item => {
           const card = document.createElement("div");
-          card.className =
-            "relative border rounded overflow-hidden bg-white cursor-pointer transition " +
-            (selectedCards.has(item.id) ? "opacity-50 grayscale" : "");
-
+           card.className =
+            "bg-white p-2 rounded shadow cursor-pointer border-4 " +
+            (isSelected ? "border-[#6a95b7]" : "border-transparent");
 
           card.innerHTML = `
             <img src="${item.image}" alt="${item.name}" class="w-full">
@@ -1693,4 +1692,5 @@
     </script>
   </body>
 </html>
+
 
