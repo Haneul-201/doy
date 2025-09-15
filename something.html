@@ -44,9 +44,9 @@
         "Etc"
       ];
 
-      // ✅ 전체 데이터 (여기에 기존 photocardData 전체 붙여넣기)
+      // ✅ 포토카드 데이터 (전체 붙여넣기)
       const photocardData = [
-               {
+        {
           category: "Album",
           items: [
             { id: 1, name: "Cherry Bomb", image: "https://i.imgur.com/ify8SjL.jpeg" },
@@ -509,7 +509,7 @@
             { id: 807, name: "Walk POP-UP STORE 10만원 이상 굿즈 구매 C", image: "https://i.imgur.com/K5qK9pF.jpeg" },
             { id: 808, name: "Walk Allmd Lucky Draw", image: "https://i.imgur.com/fSXqrow.jpeg" },
             { id: 809, name: "Walk SoundWave Lucky Draw", image: "https://i.imgur.com/pZiYR9J.jpeg" },
-            { id: 810, name: "Walk Apple music Lucky Draw", image: "https://i.imgur.com/cBK82ue.jpeg" },
+            { id: 810, name: "Walk Apple music Lucky Draw", image: "https://i.imgur.com/CHfpVS1.jpeg" },
             { id: 811, name: "Walk Everline Lucky Draw", image: "https://i.imgur.com/8GVzjaw.jpeg" },
             { id: 812, name: "Walk Ktown4u Lucky Draw", image: "https://i.imgur.com/z6CpTwr.jpeg" },
             { id: 813, name: "Walk Dear my muse Lucky Draw", image: "https://i.imgur.com/cBK82ue.jpeg" },
@@ -1552,18 +1552,31 @@
             { id: 9508, name: "Jenim_Sports D", image: "https://i.imgur.com/BiLDPhD.jpeg" },
             { id: 9509, name: "Jenim_Sports E", image: "https://i.imgur.com/OOe88LR.jpeg" },
             { id: 9510, name: "naturerepublic sun care (transparent)", image: "https://i.imgur.com/uPZ13Tu.jpeg" },
+            { id: 9511, name: "naturerepublic #at_home (Polaroid)", image: "https://i.imgur.com/dLcBZ4v.jpeg" },
+            { id: 9512, name: "SLOWACID April 2021 A", image: "https://i.imgur.com/Cvlqfg4.jpeg" },
+            { id: 9513, name: "SLOWACID April 2021 B", image: "https://i.imgur.com/cNHJrds.jpeg" },
+            { id: 9514, name: "SLOWACID May 2021 A", image: "https://i.imgur.com/iusWWUr.jpeg" },
+            { id: 9515, name: "SLOWACID May 2021 B", image: "https://i.imgur.com/A7JCqTF.jpeg" },
+            { id: 9516, name: "naturerepublic 비타페어C", image: "https://i.imgur.com/VYaxQZN.jpeg" },
+            { id: 9517, name: "naturerepublic 글로벌", image: "https://i.imgur.com/k45RXAB.jpeg" },
           ]
         }
       ];
 
-      let selectedCategory = "All";
-      let selectedCards = new Set();
+      // ✅ 상태값
+      let selectedCategory = localStorage.getItem("selectedCategory") || "All";
+      let selectedCards = new Set(
+        JSON.parse(localStorage.getItem("selectedCards")) || []
+      );
 
       const categoryButtons = document.getElementById("categoryButtons");
       const photocardGrid = document.getElementById("photocardGrid");
       const searchInput = document.getElementById("searchInput");
 
-      // ✅ 카테고리 버튼 생성 (원래 디자인 유지)
+      // ✅ 검색어 복원
+      searchInput.value = localStorage.getItem("searchInput") || "";
+
+      // ✅ 카테고리 버튼 렌더링 (원래 디자인 유지)
       function renderCategoryButtons() {
         categoryButtons.innerHTML = "";
         categories.forEach(cat => {
@@ -1576,6 +1589,7 @@
               : "bg-white text-[#6a95b7] border-[#6a95b7] hover:bg-[#6a95b7] hover:text-white");
           btn.addEventListener("click", () => {
             selectedCategory = cat;
+            saveState();
             renderCategoryButtons();
             renderCards();
           });
@@ -1617,6 +1631,7 @@
             } else {
               selectedCards.add(item.id);
             }
+            saveState();
             renderCards();
           });
 
@@ -1624,8 +1639,18 @@
         });
       }
 
+      // ✅ 상태 저장 (LocalStorage)
+      function saveState() {
+        localStorage.setItem("selectedCards", JSON.stringify([...selectedCards]));
+        localStorage.setItem("selectedCategory", selectedCategory);
+        localStorage.setItem("searchInput", searchInput.value);
+      }
+
       // ✅ 검색 이벤트
-      searchInput.addEventListener("input", renderCards);
+      searchInput.addEventListener("input", () => {
+        saveState();
+        renderCards();
+      });
 
       // ✅ 전체 선택
       document.getElementById("selectAllBtn").addEventListener("click", () => {
@@ -1636,12 +1661,14 @@
           }
         });
         itemsToSelect.forEach(item => selectedCards.add(item.id));
+        saveState();
         renderCards();
       });
 
       // ✅ 전체 해제
       document.getElementById("deselectAllBtn").addEventListener("click", () => {
         selectedCards.clear();
+        saveState();
         renderCards();
       });
 
