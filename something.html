@@ -1616,14 +1616,15 @@
 
         itemsToShow.forEach(item => {
           const card = document.createElement("div");
-           card.className =
-            "bg-white p-2 rounded shadow cursor-pointer border-4 " +
-            (isSelected ? "border-[#6a95b7]" : "border-transparent");
+          card.className =
+            "relative border rounded overflow-hidden bg-white cursor-pointer transition " +
+            (selectedCards.has(item.id) ? "opacity-50 grayscale" : "");
 
-          card.innerHTML = `
-            <img src="${item.image}" alt="${item.name}" class="w-full">
-            <p class="text-center text-sm mt-1">${item.name}</p>
-          `;
+
+         card.innerHTML = `
+           <img src="${item.image}" alt="${item.name}" class="w-full">
+           <p class="text-center text-sm mt-1">${item.name}</p>
+         `;
 
           card.addEventListener("click", () => {
             if (selectedCards.has(item.id)) {
@@ -1692,5 +1693,6 @@
     </script>
   </body>
 </html>
+
 
 
